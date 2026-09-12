@@ -8,5 +8,6 @@ namespace CostTrackerAPI.Models
         public string LastName { get; set; }
         public List<Subscription> UserSubscriptions { get; set; }
         public List<CostHistory> UserCostHistory { get; set; }
+        public List<Category> UserCategories { get; set; }
     }
 }

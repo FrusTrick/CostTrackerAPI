@@ -55,8 +55,14 @@ namespace CostTrackerAPI.Repository
 
         public async Task<bool> UpdateSubscription(Subscription subscription)
         {
-            var result = await context.Subscriptions.Where(s => s.Id == subscription.Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.Name, subscription.Name).SetProperty(p => p.Price, subscription.Price));
-            if (result > 0)
+            var result = await context.Subscriptions
+                .Where(s => s.Id == subscription.Id)
+                .ExecuteUpdateAsync(s => s.SetProperty(p => 
+                    p.CompanyName, 
+                    subscription.CompanyName)
+                .SetProperty(p => 
+                    p.Cost, subscription.Cost));
+            if (result > 0) 
             {
                 return true;
             }

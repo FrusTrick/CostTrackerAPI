@@ -1,3 +1,4 @@
+using CostTrackerAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -11,7 +12,7 @@ namespace CostTrackerAPI
 
             // Add services to the container.
 
-            builder.Services.AddDbContext<CostTrackerAPI.Data.CostTrackerAPIDBContext>(options =>
+            builder.Services.AddDbContext<CostTrackerAPIDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddControllers();

@@ -1,33 +1,65 @@
-﻿using CostTrackerAPI.Models;
+﻿using CostTrackerAPI.Data;
+using CostTrackerAPI.Models;
 using CostTrackerAPI.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace CostTrackerAPI.Repository
 {
     public class CostHistoryRepository : ICostHistoryRepository
     {
-        public Task<CostHistory> CreateCostHistory(CostHistory costHistory)
+        private readonly CostTrackerAPIDBContext context;
+
+        public CostHistoryRepository(CostTrackerAPIDBContext _context)
         {
-            throw new NotImplementedException();
+            context = _context;
         }
 
-        public Task<bool> DeleteCostHistory(int id)
+        public async Task<CostHistory> CreateCostHistory(CostHistory costHistory)
         {
-            throw new NotImplementedException();
+            context.CostHistories.Add(costHistory);
+            await context.SaveChangesAsync();
+            return costHistory;
         }
 
-        public Task<CostHistory> GetCostHistoryById(int id)
+        public async Task<bool> DeleteCostHistory(int id)
         {
-            throw new NotImplementedException();
+            var rowsAffected = await context.CostHistories.Where(ch => ch.Id == id).ExecuteDeleteAsync();
+            if(rowsAffected > 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
-        public Task<List<CostHistory>> GetUserCostHistory(int userId)
+        public async Task<CostHistory> GetCostHistoryById(int id)
         {
-            throw new NotImplementedException();
+            var costHistory = await context.CostHistories.FirstOrDefaultAsync(ch => ch.Id == id);
+            return costHistory;
         }
 
-        public Task<bool> UpdateCostHistory(CostHistory costHistory)
+        public async Task<List<CostHistory>> GetUserCostHistory(int userId)
         {
-            throw new NotImplementedException();
+            var costHistories = await context.CostHistories
+                .Where(ch => ch.UserId == userId)
+                .ToListAsync();
+            if (costHistories == null || costHistories.Count == 0)
+            {
+                return new List<CostHistory>();
+            }
+            return costHistories;
+        }
+
+        public async Task<bool> UpdateCostHistory(CostHistory costHistory)
+        {
+            context.CostHistories.Update(costHistory);
+            var result = await context.SaveChangesAsync();
+
+            if(result > 0)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

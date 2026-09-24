@@ -1,33 +1,60 @@
-﻿using CostTrackerAPI.Models;
+﻿using CostTrackerAPI.Data;
+using CostTrackerAPI.Models;
 using CostTrackerAPI.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace CostTrackerAPI.Repository
 {
     public class CategoryRepository : ICategoryRepository
     {
-        public Task<Category> CreateCategoryAsync(Category category)
+        private readonly CostTrackerAPIDBContext context;
+
+        public CategoryRepository(CostTrackerAPIDBContext _context)
         {
-            throw new NotImplementedException();
+            context = _context;
         }
 
-        public Task<bool> DeleteCategoryAsync(int id)
+
+        public async Task<Category> CreateCategoryAsync(Category newCategory)
         {
-            throw new NotImplementedException();
+           context.Categories.Add(newCategory);
+           await context.SaveChangesAsync();
+           return newCategory;
         }
 
-        public Task<Category> GetCategoryByIdAsync(int id)
+        public async Task<bool> DeleteCategoryAsync(int id)
         {
-            throw new NotImplementedException();
+           var rowsAffected = await context.Categories.Where(c => c.Id == id).ExecuteDeleteAsync();
+           if(rowsAffected > 0)
+           {
+                return true;
+           }
+
+           return false;
         }
 
-        public Task<List<Category>> ListCategoriesAsync()
+        public async Task<Category> GetCategoryByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var category = await context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+
+            return category;
         }
 
-        public Task<bool> UpdateCategoryAsync(Category category)
+        public async Task<List<Category>> ListCategoriesAsync()
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(context.Categories.ToList());
+        }
+
+        public async Task<bool> UpdateCategoryAsync(Category category)
+        {
+            context.Categories.Update(category);
+            var result = await context.SaveChangesAsync();
+
+            if(result > 0)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

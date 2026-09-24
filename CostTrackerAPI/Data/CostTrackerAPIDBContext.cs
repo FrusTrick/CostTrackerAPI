@@ -12,29 +12,30 @@ namespace CostTrackerAPI.Data
 
         }
 
-        DbSet<Subscription> Subscriptions { get; set; }
-        DbSet<CostHistory> CostHistories { get; set; }
-        DbSet<Category> Categories { get; set; }
+        public DbSet<Subscription> Subscriptions { get; set; }
+        public DbSet<CostHistory> CostHistories { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Configure the relationships between User and Subscription
+            
+            builder.Entity<Subscription>()
+                .HasOne(s => s.SubscriptionCategory)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.Entity<User>()
                 .HasMany(u => u.UserSubscriptions)
                 .WithOne()
-                .OnDelete(DeleteBehavior.Cascade);
-            // Configure the relationships between User and CostHistory
-            builder.Entity<User>()
-                .HasMany(u => u.UserCostHistory)
-                .WithOne()
-                .OnDelete(DeleteBehavior.Cascade);
-            // Configure the relationships between User and Category
-            builder.Entity<User>()
-                .HasMany(u => u.UserCategories)
-                .WithOne()
+                .HasForeignKey(s => s.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<CostHistory>()
+                .HasOne<User>()
+                .WithMany(u => u.UserCostHistory)
+                .HasForeignKey(ch => ch.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

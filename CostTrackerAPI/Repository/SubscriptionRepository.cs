@@ -1,33 +1,67 @@
-﻿using CostTrackerAPI.Models;
+﻿using CostTrackerAPI.Data;
+using CostTrackerAPI.Models;
 using CostTrackerAPI.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace CostTrackerAPI.Repository
 {
     public class SubscriptionRepository : ISubscriptionRepository
     {
-        public Task<Subscription> CreateSubscription(Subscription subscription)
+        private readonly CostTrackerAPIDBContext context;
+
+        public SubscriptionRepository(CostTrackerAPIDBContext _context)
         {
-            throw new NotImplementedException();
+            context = _context;
         }
 
-        public Task<bool> DeleteSubscription(int id)
+
+        public async Task<Subscription> CreateSubscription(Subscription subscription)
         {
-            throw new NotImplementedException();
+            context.Subscriptions.Add(subscription);
+            await context.SaveChangesAsync();
+
+            return subscription;
         }
 
-        public Task<Subscription> GetSubscriptionById(int id)
+        public async Task<bool> DeleteSubscription(int id)
         {
-            throw new NotImplementedException();
+            var rowsaffected = await context.Subscriptions.Where(s => s.Id == id).ExecuteDeleteAsync();
+            if (rowsaffected > 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
-        public Task<List<Subscription>> GetUserSubscriptions(int userId)
+        public async Task<Subscription> GetSubscriptionById(int id)
         {
-            throw new NotImplementedException();
+            var subscription = await context.Subscriptions.FirstOrDefaultAsync(s => s.Id == id);
+            return subscription;
         }
 
-        public Task<bool> UpdateSubscription(Subscription subscription)
+        public async Task<List<Subscription>> GetUserSubscriptions(int userId)
         {
-            throw new NotImplementedException();
+            var subscriptions = await context.Subscriptions
+                .Where(s => s.UserId == userId)
+                .ToListAsync();
+            if (subscriptions == null || subscriptions.Count == 0)
+            {
+                return new List<Subscription>();
+            }
+
+            return subscriptions        ;
+        }
+
+        public async Task<bool> UpdateSubscription(Subscription subscription)
+        {
+            var result = await context.Subscriptions.Where(s => s.Id == subscription.Id).ExecuteUpdateAsync(s => s.SetProperty(p => p.Name, subscription.Name).SetProperty(p => p.Price, subscription.Price));
+            if (result > 0)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

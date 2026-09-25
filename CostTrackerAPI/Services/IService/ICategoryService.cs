@@ -1,13 +1,14 @@
-﻿using CostTrackerAPI.Models;
+﻿using CostTrackerAPI.DTO.Categories;
+using CostTrackerAPI.Models;
 
 namespace CostTrackerAPI.Services.IService
 {
     public interface ICategoryService
     {
-        Task<List<Category>> GetAllCategoriesAsync();
+        Task<List<CategoryDTO>> GetAllCategoriesAsync();
         Task<Category> GetCategoryByIdAsync(int id);
-        Task<Category> CreateCategoryAsync(Category category);
-        Task<Category> UpdateCategoryAsync(int id, Category category);
+        Task<CategoryDTO> CreateCategoryAsync(CreateCategoryDTO newCategory);
+        Task<CategoryDTO> UpdateCategoryAsync(int id, CategoryDTO category);
         Task<bool> DeleteCategoryAsync(int id);
 
     }

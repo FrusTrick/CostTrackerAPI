@@ -6,7 +6,7 @@ namespace CostTrackerAPI.Services
     public class CategoryService : ICategoryService
     {
         
-        public Task<Category> CreateCategoryAsync(Category category)
+        public Task<CategoryDTO> CreateCategoryAsync(Category category)
         {
             throw new NotImplementedException();
         }

@@ -1,34 +1,78 @@
-﻿using CostTrackerAPI.Models;
+﻿using CostTrackerAPI.DTO.Categories;
+using CostTrackerAPI.Models;
+using CostTrackerAPI.Repository.IRepository;
 using CostTrackerAPI.Services.IService;
 
 namespace CostTrackerAPI.Services
 {
     public class CategoryService : ICategoryService
     {
+        private readonly ICategoryRepository _categoryRepository;
+        public CategoryService(ICategoryRepository categoryRepository)
+        {
+            _categoryRepository = categoryRepository;
+        }
+
+
+        public async Task<CategoryDTO> CreateCategoryAsync(CreateCategoryDTO newCategory)
+        {
+            Category incomingCategory = new Category
+            {
+                Name = newCategory.CategoryName
+            };
+
+            var createdCategory = await _categoryRepository.CreateCategoryAsync(incomingCategory);
+            var createdDto = MapToCategoryDTO(createdCategory);
+            return createdDto;
+        }
+
+        public async Task<bool> DeleteCategoryAsync(int id)
+        {
+            return await _categoryRepository.DeleteCategoryAsync(id);
+        }
+
+        public async Task<List<CategoryDTO>> GetAllCategoriesAsync()
+        {
+            var categories = await _categoryRepository.ListCategoriesAsync();
+            var categoryDTOs = categories.Select(c => MapToCategoryDTO(c)).ToList();
+
+            return categoryDTOs;
+        }           
         
-        public Task<CategoryDTO> CreateCategoryAsync(Category category)
+
+        public async Task<Category> GetCategoryByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var result = await _categoryRepository.GetCategoryByIdAsync(id);
+            return result; 
         }
 
-        public Task<bool> DeleteCategoryAsync(int id)
+        public async Task<bool> UpdateCategoryAsync(int id, CategoryDTO category)
         {
-            throw new NotImplementedException();
+            var mapped = MapToCategory(category);
+            var result = await _categoryRepository.UpdateCategoryAsync(mapped);
+           
+            return result;
         }
 
-        public Task<List<Category>> GetAllCategoriesAsync()
+
+        //Below are private helper methods to map Category to CategoryDTO and vice versa.
+
+        private CategoryDTO MapToCategoryDTO(Category category)
         {
-            throw new NotImplementedException();
+            return new CategoryDTO
+            {
+                CategoryId = category.Id,
+                CategoryName = category.Name
+            };
         }
 
-        public Task<Category> GetCategoryByIdAsync(int id)
+        private Category MapToCategory(CategoryDTO categoryDTO)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<Category> UpdateCategoryAsync(int id, Category category)
-        {
-            throw new NotImplementedException();
+            return new Category
+            {
+                Id = categoryDTO.CategoryId,
+                Name = categoryDTO.CategoryName
+            };
         }
     }
 }

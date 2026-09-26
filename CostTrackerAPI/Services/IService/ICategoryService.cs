@@ -8,7 +8,7 @@ namespace CostTrackerAPI.Services.IService
         Task<List<CategoryDTO>> GetAllCategoriesAsync();
         Task<Category> GetCategoryByIdAsync(int id);
         Task<CategoryDTO> CreateCategoryAsync(CreateCategoryDTO newCategory);
-        Task<CategoryDTO> UpdateCategoryAsync(int id, CategoryDTO category);
+        Task<bool> UpdateCategoryAsync(int id, CategoryDTO category);
         Task<bool> DeleteCategoryAsync(int id);
 
     }

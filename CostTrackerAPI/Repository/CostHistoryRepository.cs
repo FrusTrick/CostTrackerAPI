@@ -34,7 +34,8 @@ namespace CostTrackerAPI.Repository
 
         public async Task<CostHistory> GetCostHistoryById(int id)
         {
-            var costHistory = await context.CostHistories.FirstOrDefaultAsync(ch => ch.Id == id);
+            var costHistory = await context.CostHistories
+                .FirstOrDefaultAsync(ch => ch.Id == id);
             return costHistory;
         }
 
@@ -43,10 +44,7 @@ namespace CostTrackerAPI.Repository
             var costHistories = await context.CostHistories
                 .Where(ch => ch.UserId == userId)
                 .ToListAsync();
-            if (costHistories == null || costHistories.Count == 0)
-            {
-                return new List<CostHistory>();
-            }
+
             return costHistories;
         }
 

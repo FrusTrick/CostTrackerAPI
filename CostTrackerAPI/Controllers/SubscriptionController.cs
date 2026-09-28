@@ -23,15 +23,15 @@ namespace CostTrackerAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<SubscriptionDTO>> GetSingleSubscription(int id)
+        [Route("{subscriptionId:int}")]
+        public async Task<ActionResult<SubscriptionDTO>> GetSingleSubscription(int subscriptionId)
         {
-            var subscription = await _subscriptionService.GetSubscriptionByIdAsync(id);
+            var subscription = await _subscriptionService.GetSubscriptionByIdAsync(subscriptionId);
             return Ok(subscription);
         }
 
         [HttpGet]
-        [Route("{userId:int}")]
-        public async Task<ActionResult<SubscriptionDTO>> ListSubscriptions(int userId)
+        public async Task<ActionResult<List<SubscriptionDTO>>> ListUserSubscriptions(int userId)
         {
             var subscriptions = await _subscriptionService.GetAllSubscriptionsAsync(userId);
             return Ok(subscriptions);
@@ -39,9 +39,9 @@ namespace CostTrackerAPI.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
-        public async Task<ActionResult<bool>> UpdateSubscription(int id, SubscriptionDTO subscriptionDto)
+        public async Task<ActionResult<bool>> UpdateUserSubscription(SubscriptionDTO subscriptionDto)
         {
-            var result = await _subscriptionService.UpdateSubscriptionAsync(id, subscriptionDto);
+            var result = await _subscriptionService.UpdateSubscriptionAsync(subscriptionDto);
             if (!result)
             {
                 return NotFound();

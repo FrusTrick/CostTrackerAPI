@@ -44,6 +44,7 @@ namespace CostTrackerAPI.Repository
         {
             var subscriptions = await context.Subscriptions
                 .Where(s => s.UserId == userId)
+                .Include(v => v.SubscriptionCategory)
                 .ToListAsync();
             if (subscriptions == null || subscriptions.Count == 0)
             {

@@ -8,6 +8,8 @@ namespace CostTrackerAPI.Models
         public int UserId { get; set; }
         public string CompanyName { get; set; }
         public int Cost { get; set; }
+
+        public int CategoryId { get; set; }
         public Category SubscriptionCategory { get; set; }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using CostTrackerAPI.DTO.Categories;
-using CostTrackerAPI.Services;
 using CostTrackerAPI.Services.IService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,7 +22,7 @@ namespace CostTrackerAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<CategoryDTO>> GetAllCategories()
+        public async Task<ActionResult<List<CategoryDTO>>> GetAllCategories()
         {
             var categories = await _categoryService.GetAllCategoriesAsync();
             return Ok(categories);
@@ -34,13 +33,20 @@ namespace CostTrackerAPI.Controllers
         public async Task<ActionResult<CategoryDTO>> GetCategoryById(int id)
         {
             var category = await _categoryService.GetCategoryByIdAsync(id);
+
+            if(category == null)
+            {
+                return NotFound();
+            }
+
             return Ok(category);
         }
 
         [HttpPut]
         [Route("{id:int}")]
-        public async Task<ActionResult<bool>> UpdateCategory(int id, CategoryDTO categoryDto)
+        public async Task<ActionResult<bool>> UpdateCategory(CategoryDTO categoryDto)
         {
+            int id = categoryDto.CategoryId;
             var result = await _categoryService.UpdateCategoryAsync(id, categoryDto);
             if (!result)
             {

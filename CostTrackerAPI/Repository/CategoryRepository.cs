@@ -24,7 +24,7 @@ namespace CostTrackerAPI.Repository
 
         public async Task<bool> DeleteCategoryAsync(int id)
         {
-           var rowsAffected = await context.Categories.Where(c => c.Id == id).ExecuteDeleteAsync();
+           int rowsAffected = await context.Categories.Where(c => c.Id == id).ExecuteDeleteAsync();
            if(rowsAffected > 0)
            {
                 return true;
@@ -35,20 +35,22 @@ namespace CostTrackerAPI.Repository
 
         public async Task<Category> GetCategoryByIdAsync(int id)
         {
-            var category = await context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            Category category = await context.Categories.FirstOrDefaultAsync(c => c.Id == id);
 
             return category;
         }
 
         public async Task<List<Category>> ListCategoriesAsync()
         {
-            return await Task.FromResult(context.Categories.ToList());
+            List<Category> categoryList = await context.Categories.ToListAsync();
+
+            return categoryList;
         }
 
         public async Task<bool> UpdateCategoryAsync(Category category)
         {
             context.Categories.Update(category);
-            var result = await context.SaveChangesAsync();
+            int result = await context.SaveChangesAsync();
 
             if(result > 0)
             {

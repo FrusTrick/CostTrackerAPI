@@ -23,8 +23,7 @@ namespace CostTrackerAPI.Services
             {
                 UserId = subscription.UserId,
                 CompanyName = subscription.CompanyName,
-                Cost = subscription.Cost,
-                SubscriptionCategory = subscription.SubscriptionCategory
+                Cost = subscription.Cost
             };
 
             var createdSubscription = await _subscriptionRepository.CreateSubscription(newSubscription);
@@ -48,14 +47,10 @@ namespace CostTrackerAPI.Services
             var subscriptionDTOs = result.Select(subscription => new SubscriptionDTO
             {
                 Id = subscription.Id,
-                userId = subscription.UserId,
+                UserId = subscription.UserId,
                 CompanyName = subscription.CompanyName,
                 Cost = subscription.Cost,
-                SubscriptionCategory = new CategoryDTO
-                {
-                    CategoryId = subscription.SubscriptionCategory.Id,
-                    CategoryName = subscription.SubscriptionCategory.Name
-                }
+                CategoryId = subscription.CategoryId
             }).ToList();
 
             return subscriptionDTOs;
@@ -71,7 +66,7 @@ namespace CostTrackerAPI.Services
             return subscriptionDTO;
         }
 
-        public async Task<bool> UpdateSubscriptionAsync(int id, SubscriptionDTO subscription)
+        public async Task<bool> UpdateSubscriptionAsync(SubscriptionDTO subscription)
         {
             var result = await _subscriptionRepository.UpdateSubscription(MapToSubscription(subscription));
             return result;
@@ -83,9 +78,10 @@ namespace CostTrackerAPI.Services
             return new SubscriptionDTO
             {
                 Id = subscription.Id,
-                userId = subscription.UserId,
+                UserId = subscription.UserId,
                 CompanyName = subscription.CompanyName,
                 Cost = subscription.Cost,
+                CategoryId = subscription.CategoryId,
                 SubscriptionCategory = new CategoryDTO
                 {
                     CategoryId = subscription.SubscriptionCategory.Id,
@@ -99,14 +95,10 @@ namespace CostTrackerAPI.Services
             return new Subscription
             {
                 Id = subscriptionDTO.Id,
-                UserId = subscriptionDTO.userId,
+                UserId = subscriptionDTO.UserId,
                 CompanyName = subscriptionDTO.CompanyName,
                 Cost = subscriptionDTO.Cost,
-                SubscriptionCategory = new Category
-                {
-                    Id = subscriptionDTO.SubscriptionCategory.CategoryId,
-                    Name = subscriptionDTO.SubscriptionCategory.CategoryName
-                }
+                CategoryId = subscriptionDTO.CategoryId
             };
         }
     }

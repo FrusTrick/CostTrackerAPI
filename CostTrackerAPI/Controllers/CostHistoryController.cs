@@ -23,24 +23,25 @@ namespace CostTrackerAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<CostHistoryDTO>> GetSingleCostHistory(int chId)
+        [Route ("{costHistoryId:int}")]
+        public async Task<ActionResult<CostHistoryDTO>> GetSingleCostHistory(int costHistoryId)
         {
-            var costHistory = await _costHistoryService.GetCostHistoryByIdAsync(chId);
+            var costHistory = await _costHistoryService.GetCostHistoryByIdAsync(costHistoryId);
             return Ok(costHistory);
         }
 
         [HttpGet]
-        [Route("{id:int}")]
-        public async Task<ActionResult<CostHistoryDTO>> ListCostHistories(int userId)
+        public async Task<ActionResult<List<CostHistoryDTO>>> ListCostHistories(int userId)
         {
             var costHistories = await _costHistoryService.GetAllCostHistoriesAsync(userId);
             return Ok(costHistories);
         }
 
         [HttpPut]
-        public async Task<ActionResult<bool>> UpdateCostHistory(int id, CostHistoryDTO costHistoryDto)
+        public async Task<ActionResult<bool>> UpdateCostHistory(CostHistoryDTO costHistoryDto)
         {
-            var result = await _costHistoryService.UpdateCostHistoryAsync(id, costHistoryDto);
+            int id = costHistoryDto.Id;
+            bool result = await _costHistoryService.UpdateCostHistoryAsync(costHistoryDto);
             if (!result)
             {
                 return NotFound();
@@ -49,6 +50,7 @@ namespace CostTrackerAPI.Controllers
         }
 
         [HttpDelete]
+        [Route("id:int")]
         public async Task<ActionResult<bool>> DeleteCostHistory(int id)
         {
             var result = await _costHistoryService.DeleteCostHistoryAsync(id);

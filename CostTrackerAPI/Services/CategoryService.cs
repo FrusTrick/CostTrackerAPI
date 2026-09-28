@@ -40,10 +40,17 @@ namespace CostTrackerAPI.Services
         }           
         
 
-        public async Task<Category> GetCategoryByIdAsync(int id)
+        public async Task<CategoryDTO> GetCategoryByIdAsync(int id)
         {
-            var result = await _categoryRepository.GetCategoryByIdAsync(id);
-            return result; 
+            var category = await _categoryRepository.GetCategoryByIdAsync(id);
+
+            if(category == null)
+            {
+                return null;
+            }
+
+            var mapped = MapToCategoryDTO(category);
+            return mapped; 
         }
 
         public async Task<bool> UpdateCategoryAsync(int id, CategoryDTO category)

@@ -41,13 +41,19 @@ namespace CostTrackerAPI.Services
             return costHistories.Select(MapToCostHistoryDTO).ToList();
         }
 
-        public async Task<CostHistoryDTO> GetCostHistoryByIdAsync(int id)
+        public async Task<CostHistoryDTO?> GetCostHistoryByIdAsync(int id)
         {
             var costHistory = await _costHistoryRepository.GetCostHistoryById(id);
+
+            if(costHistory == null)
+            {
+                return null;
+            }
+
             return MapToCostHistoryDTO(costHistory);
         }
 
-        public async Task<bool> UpdateCostHistoryAsync(int id, CostHistoryDTO costHistory)
+        public async Task<bool> UpdateCostHistoryAsync(CostHistoryDTO costHistory)
         {
             var mappedCostHistory = MapToCostHistory(costHistory);
             var result = await _costHistoryRepository.UpdateCostHistory(mappedCostHistory);

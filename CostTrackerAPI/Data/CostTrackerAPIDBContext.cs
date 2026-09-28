@@ -19,11 +19,11 @@ namespace CostTrackerAPI.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            
+
             builder.Entity<Subscription>()
                 .HasOne(s => s.SubscriptionCategory)
-                .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(c => c.Subscriptions)
+                .HasForeignKey(s => s.CategoryId);
 
             builder.Entity<User>()
                 .HasMany(u => u.UserSubscriptions)

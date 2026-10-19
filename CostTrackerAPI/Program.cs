@@ -2,6 +2,8 @@ using CostTrackerAPI.Data;
 using CostTrackerAPI.Models;
 using CostTrackerAPI.Repository;
 using CostTrackerAPI.Repository.IRepository;
+using CostTrackerAPI.Services;
+using CostTrackerAPI.Services.IService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -30,26 +32,46 @@ namespace CostTrackerAPI
             builder.Services.AddOpenApi();
 
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICostHistoryRepository, CostHistoryRepository>();
+            builder.Services.AddScoped<ICostHistoryService, CostHistoryService>();
             builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+            builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 
             builder.Services.AddAuthorization();
-            builder.Services.AddCors();
-
-           
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("FrontendDev", policy =>
+                {
+                    policy.WithOrigins(builder.Configuration["Frontend_Domain"])
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
 
             var app = builder.Build();
 
-            app.UseCors();
-
-
+            // Seeding the DB with an Admin user if it doesn't exist
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    await Seeder.SeedAdminAsync(services);
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred while seeding the database.");
+                }
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
-
                 app.MapScalarApiReference();
+                app.UseCors("FrontendDev");
             }
 
             app.UseHttpsRedirection();
@@ -61,6 +83,7 @@ namespace CostTrackerAPI
             api.MapIdentityApi<User>();
 
             app.MapControllers();
+
 
             app.Run();
         }

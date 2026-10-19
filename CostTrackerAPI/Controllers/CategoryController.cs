@@ -1,5 +1,6 @@
 ﻿using CostTrackerAPI.DTO.Categories;
 using CostTrackerAPI.Services.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CostTrackerAPI.Controllers
@@ -14,6 +15,7 @@ namespace CostTrackerAPI.Controllers
             _categoryService = categoryService;
         }
 
+        //[Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<CreateCategoryDTO>> CreateCategory(CreateCategoryDTO categoryDto)
         {
@@ -42,6 +44,7 @@ namespace CostTrackerAPI.Controllers
             return Ok(category);
         }
 
+        //[Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("{id:int}")]
         public async Task<ActionResult<bool>> UpdateCategory(CategoryDTO categoryDto)
@@ -55,6 +58,7 @@ namespace CostTrackerAPI.Controllers
             return Ok(result);
         }
 
+        //[Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("{id:int}")]
         public async Task<ActionResult<bool>> DeleteCategory(int id)

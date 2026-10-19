@@ -1,5 +1,6 @@
 ﻿using CostTrackerAPI.DTO.Subscriptions;
 using CostTrackerAPI.Services.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CostTrackerAPI.Controllers
@@ -15,6 +16,7 @@ namespace CostTrackerAPI.Controllers
             _subscriptionService = subscriptionService;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<SubscriptionDTO>> CreateSubscription(CreateSubscriptionDTO subscriptionDto)
         {
@@ -22,6 +24,7 @@ namespace CostTrackerAPI.Controllers
             return Ok(subscription);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("{subscriptionId:int}")]
         public async Task<ActionResult<SubscriptionDTO>> GetSingleSubscription(int subscriptionId)
@@ -30,6 +33,7 @@ namespace CostTrackerAPI.Controllers
             return Ok(subscription);
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<List<SubscriptionDTO>>> ListUserSubscriptions(int userId)
         {
@@ -37,6 +41,7 @@ namespace CostTrackerAPI.Controllers
             return Ok(subscriptions);
         }
 
+        [Authorize]
         [HttpPut]
         [Route("{id:int}")]
         public async Task<ActionResult<bool>> UpdateUserSubscription(SubscriptionDTO subscriptionDto)
@@ -49,6 +54,7 @@ namespace CostTrackerAPI.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpDelete]
         [Route("{id:int}")]
         public async Task<ActionResult<bool>> DeleteSubscription(int id)

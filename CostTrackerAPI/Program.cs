@@ -20,7 +20,6 @@ namespace CostTrackerAPI
 
             builder.Services.AddDbContext<CostTrackerAPIDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
             builder.Services.AddIdentityApiEndpoints<User>(options =>
             {
                 options.User.RequireUniqueEmail = true;

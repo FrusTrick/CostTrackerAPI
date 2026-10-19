@@ -15,7 +15,7 @@ namespace CostTrackerAPI.Controllers
             _categoryService = categoryService;
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<CreateCategoryDTO>> CreateCategory(CreateCategoryDTO categoryDto)
         {
@@ -23,6 +23,7 @@ namespace CostTrackerAPI.Controllers
             return Ok(category);
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<List<CategoryDTO>>> GetAllCategories()
         {
@@ -30,6 +31,7 @@ namespace CostTrackerAPI.Controllers
             return Ok(categories);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("{id:int}")]
         public async Task<ActionResult<CategoryDTO>> GetCategoryById(int id)
@@ -44,7 +46,7 @@ namespace CostTrackerAPI.Controllers
             return Ok(category);
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("{id:int}")]
         public async Task<ActionResult<bool>> UpdateCategory(CategoryDTO categoryDto)
@@ -58,7 +60,7 @@ namespace CostTrackerAPI.Controllers
             return Ok(result);
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("{id:int}")]
         public async Task<ActionResult<bool>> DeleteCategory(int id)

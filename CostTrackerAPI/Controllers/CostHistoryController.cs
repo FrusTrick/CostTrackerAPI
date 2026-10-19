@@ -1,5 +1,6 @@
 ﻿using CostTrackerAPI.DTO.CostHistories;
 using CostTrackerAPI.Services.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CostTrackerAPI.Controllers
@@ -15,6 +16,7 @@ namespace CostTrackerAPI.Controllers
             _costHistoryService = costHistoryService;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<CostHistoryDTO>> CreateCostHistory(CreateCostHistoryDTO costHistoryDto)
         {
@@ -22,6 +24,7 @@ namespace CostTrackerAPI.Controllers
             return Ok(costHistory);
         }
 
+        [Authorize]
         [HttpGet]
         [Route ("{costHistoryId:int}")]
         public async Task<ActionResult<CostHistoryDTO>> GetSingleCostHistory(int costHistoryId)
@@ -30,6 +33,7 @@ namespace CostTrackerAPI.Controllers
             return Ok(costHistory);
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<List<CostHistoryDTO>>> ListCostHistories(int userId)
         {
@@ -37,6 +41,7 @@ namespace CostTrackerAPI.Controllers
             return Ok(costHistories);
         }
 
+        [Authorize]
         [HttpPut]
         public async Task<ActionResult<bool>> UpdateCostHistory(CostHistoryDTO costHistoryDto)
         {
@@ -49,6 +54,7 @@ namespace CostTrackerAPI.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpDelete]
         [Route("id:int")]
         public async Task<ActionResult<bool>> DeleteCostHistory(int id)

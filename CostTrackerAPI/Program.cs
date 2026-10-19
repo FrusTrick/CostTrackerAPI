@@ -44,7 +44,8 @@ namespace CostTrackerAPI
                 {
                     policy.WithOrigins(builder.Configuration["Frontend_Domain"])
                     .AllowAnyHeader()
-                    .AllowAnyMethod();
+                    .AllowAnyMethod()
+                    .AllowCredentials();
                 });
             });
 
